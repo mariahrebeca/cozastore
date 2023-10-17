@@ -4,9 +4,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CozaStore.Models;
 
-[Table("ProdutoCategoria")]
+[Table("ProdutoTag")]
 
-    public class ProdutoCategoria
+    public class ProdutoTag
     {
         [Key, Column(Order = 1)]
        public int ProdutoId { get; set; } 
@@ -14,7 +14,7 @@ namespace CozaStore.Models;
        public Produto Produto {get; set;}
 
         [Key, Column(Order = 2)]
-       public byte CategoriaId { get; set; }
-       [ForeignKey("CategoriaId")]
-       public Categoria Categoria {get; set;}
+       public byte TagId { get; set; }
+       [ForeignKey("TagId")]
+       public Tag Tag {get; set;}
     }
