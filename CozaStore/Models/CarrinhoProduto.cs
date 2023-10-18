@@ -3,9 +3,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CozaStore.Models;
 
-[Table("CarrinhoCarrinho")]
+[Table("CarrinhoProduto")]
 
-public class CarrinhoCarrinho
+public class CarrinhoProduto
 {
     [Key, Column(Order = 1)]
     public int CarrinhoId { get; set; }
