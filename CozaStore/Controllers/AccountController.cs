@@ -3,6 +3,7 @@ using CozaStore.Data;
 using Microsoft.AspNetCore.Identity;
 using CozaStore.ViewModels.Account;
 using System.Net.Mail;
+using System.Security.Claims;
 
 namespace CozaStore.Controllers;
 
@@ -14,11 +15,10 @@ public class AccountController : Controller
     private readonly AppDbContext _contexto;
 
     public AccountController(
-        Logger<AccountController> logger,
+        ILogger<AccountController> logger,
         SignInManager<IdentityUser> signInManager,
         UserManager<IdentityUser> userManager,
         AppDbContext contexto)
-
     {
         _logger = logger;
         _signInManager = signInManager;
@@ -26,19 +26,20 @@ public class AccountController : Controller
         _contexto = contexto;
     }
 
+    [HttpGet]
     public IActionResult Login(string returnUrl)
     {
         LoginVM login = new() {
             UrlRetorno = returnUrl ?? Url.Content("~/")
         };
-        return View();
+        return View(login);
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Login(LoginVM login)
     {
-        if (!ModelState.IsValid)
+        if (ModelState.IsValid)
         {
             string userName = login.Email;
             if (IsValidEmail(login.Email))
@@ -66,10 +67,27 @@ public class AccountController : Controller
 
             ModelState.AddModelError(string.Empty, "Usuário e/ou Senha Inválidos!");
 
-    }
-    return View(login);
+        }
+        return View(login);
     }
 
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Logout()
+    {
+        _logger.LogInformation($"Usuário {ClaimTypes.Email} fez logoff");
+        await _signInManager.SignOutAsync();
+        return RedirectToAction("Index", "Home");
+    }
+
+
+    [HttpGet]
+    public IActionResult Register()
+    {
+        RegisterVM register = new();
+        return View(register);
+    }
 
     public static bool IsValidEmail(string email)
     {
